@@ -1,20 +1,25 @@
 import streamlit as st
 from transformers import pipeline
 
-st.title("Text Summarization using BART")
+st.set_page_config(page_title="BART Text Summarizer")
 
-summarizer = pipeline(
-    "summarization",
-    model="facebook/bart-large-cnn"
-)
+st.title("📝 Text Summarization using BART")
 
-text = st.text_area("Enter text")
+@st.cache_resource
+def load_model():
+    return pipeline("summarization", model="facebook/bart-large-cnn")
+
+summarizer = load_model()
+
+text = st.text_area("Enter your text here")
+
+max_len = st.slider("Max Length", 50, 300, 130)
+min_len = st.slider("Min Length", 10, 100, 30)
 
 if st.button("Summarize"):
-    summary = summarizer(
-        text,
-        max_length=100,
-        min_length=30,
-        do_sample=False
-    )
-    st.write(summary[0]["summary_text"])
+    if text.strip():
+        result = summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
+        st.subheader("Summary")
+        st.write(result[0]["summary_text"])
+    else:
+        st.warning("Please enter some text")
