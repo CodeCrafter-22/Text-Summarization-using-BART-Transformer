@@ -23,3 +23,5 @@ if st.button("Summarize"):
         with st.spinner("Generating summary..."):
             result = summarizer(text, max_length=130, min_length=30, do_sample=False)
             st.success(result[0]["summary_text"])
+
+st.write("App is running...")
